@@ -5,8 +5,12 @@ let items = [];
 let filter = "todos";
 
 window.addEventListener("load", () => {
+
   addRow();
+
   document.getElementById("saveBtn").addEventListener("click", saveUser);
+  document.getElementById("addAllBtn").addEventListener("click", addAllItems);
+
   document.getElementById("f_all").onclick = () => setFilter("todos");
   document.getElementById("f_todo").onclick = () => setFilter("por");
   document.getElementById("f_done").onclick = () => setFilter("feitos");
@@ -18,10 +22,12 @@ window.addEventListener("load", () => {
 });
 
 function saveUser() {
-  user = document.getElementById("userName").value;
+  user = document.getElementById("userName").value.trim();
+
   if (!user) return;
 
   localStorage.setItem("user", user);
+
   showApp();
   loadItems();
 }
@@ -37,85 +43,87 @@ function setFilter(f) {
   render();
 }
 
-
-
 async function loadItems() {
   const res = await fetch(API_URL + "?action=listar");
   items = await res.json();
+
   render();
 }
 
 function render() {
+
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
 
-  let filtered = items;
+  let filtered = [...items];
 
   if (filter === "por") {
-    filtered = items.filter(i => !i.comprado);
+    filtered = filtered.filter(i => !i.comprado);
   }
 
   if (filter === "feitos") {
-    filtered = items.filter(i => i.comprado);
+    filtered = filtered.filter(i => i.comprado);
   }
 
   filtered.forEach(item => {
+
     const div = document.createElement("div");
     div.className = "item";
 
-    // swipe delete
-    let startX = 0;
+    if (item.comprado) {
+      div.classList.add("comprado");
+    }
 
-    div.addEventListener("touchstart", e => {
-      startX = e.touches[0].clientX;
+    const info = document.createElement("div");
+    info.className = "item-info";
+
+    const title = document.createElement("div");
+    title.className = "item-title";
+    title.textContent = `${item.produto} (${item.quantidade})`;
+
+    const sub = document.createElement("div");
+    sub.className = "item-sub";
+    sub.textContent = item.utilizador;
+
+    info.appendChild(title);
+    info.appendChild(sub);
+
+    const del = document.createElement("div");
+    del.className = "delete";
+    del.textContent = "🗑";
+
+    del.addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteItem(item.id);
     });
 
-    div.addEventListener("touchend", e => {
-      let diff = e.changedTouches[0].clientX - startX;
-      if (diff < -80) {
-        deleteItem(item.id);
-      }
+    div.addEventListener("click", () => {
+      toggleItem(item.id, !item.comprado);
     });
 
-   const info = document.createElement("div");
-info.className = "item-info";
+    div.appendChild(info);
+    div.appendChild(del);
 
-const title = document.createElement("div");
-title.className = "item-title";
-title.textContent = `${item.produto} (${item.quantidade})`;
-
-const sub = document.createElement("div");
-sub.className = "item-sub";
-sub.textContent = item.utilizador;
-
-info.appendChild(title);
-info.appendChild(sub);
-
-const del = document.createElement("div");
-del.className = "delete";
-del.textContent = "🗑";
-
-del.addEventListener("click", (e) => {
-  e.stopPropagation();
-  deleteItem(item.id);
-});
-
-if (item.comprado) {
-  div.classList.add("comprado");
+    lista.appendChild(div);
+  });
 }
 
-div.addEventListener("click", () => {
-  toggleItem(item.id, !item.comprado);
-});
+async function toggleItem(id, value) {
 
-div.appendChild(info);
-div.appendChild(del);
-lista.appendChild(div);
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "atualizar",
+      id,
+      comprado: value
+    })
+  });
 
-  }); // fecha o forEach
-} // fecha o render
-    
+  loadItems();
+}
+
 async function deleteItem(id) {
+
   await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -126,26 +134,6 @@ async function deleteItem(id) {
 
   loadItems();
 }
-
-// sync mais leve
-setInterval(loadItems, 8000);
-
-async function toggleItem(id, value) {
-  await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "atualizar",
-      id: id,
-      comprado: value
-    })
-  });
-
-  loadItems();
-}
-
-window.addEventListener("load", () => {
-  document.getElementById("addAllBtn").addEventListener("click", addAllItems);
-});
 
 function addRow() {
 
@@ -163,7 +151,6 @@ function addRow() {
   qty.placeholder = "Qt";
   qty.autocomplete = "off";
 
-  // Verifica se é necessário criar nova linha
   prod.addEventListener("input", checkLastRow);
   qty.addEventListener("input", checkLastRow);
 
@@ -177,8 +164,6 @@ function checkLastRow() {
 
   const rows = document.querySelectorAll(".row");
 
-  if (rows.length === 0) return;
-
   const lastRow = rows[rows.length - 1];
 
   const prod = lastRow.querySelector(".prod").value.trim();
@@ -190,11 +175,13 @@ function checkLastRow() {
 }
 
 async function addAllItems() {
+
   const rows = document.querySelectorAll(".row");
 
   for (const r of rows) {
-    const produto = r.querySelector(".prod").value;
-    const quantidade = r.querySelector(".qty").value;
+
+    const produto = r.querySelector(".prod").value.trim();
+    const quantidade = r.querySelector(".qty").value.trim();
 
     if (!produto) continue;
 
@@ -210,13 +197,10 @@ async function addAllItems() {
     });
   }
 
-  // reset
-  document.getElementById("rows").innerHTML = `
-    <div class="row">
-      <input class="prod" placeholder="Produto">
-      <input class="qty" type="number" placeholder="Qt">
-    </div>
-  `;
+  document.getElementById("rows").innerHTML = "";
+  addRow();
 
   loadItems();
 }
+
+setInterval(loadItems, 5000);
