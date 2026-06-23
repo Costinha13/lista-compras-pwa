@@ -113,3 +113,48 @@ button {
   width: 100%;
   margin-top: 8px;
 }
+.item {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  cursor: pointer;
+
+  transition: all .2s ease;
+}
+
+.item.comprado {
+  background: #007aff;
+  color: white;
+}
+
+.item.comprado .item-sub {
+  color: rgba(255,255,255,.8);
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.item-sub {
+  font-size: 14px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.delete {
+  font-size: 22px;
+  margin-left: 10px;
+  cursor: pointer;
+}
