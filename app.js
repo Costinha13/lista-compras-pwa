@@ -2,81 +2,83 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwPXMOnkX4B6ifIJ3ml7BKK
 
 let user = localStorage.getItem("user");
 
-window.onload = () => {
-if (user) {
-showApp();
-loadItems();
-}
-};
+window.addEventListener("load", () => {
+  document.getElementById("saveBtn").addEventListener("click", saveUser);
+  document.getElementById("addBtn").addEventListener("click", addItem);
+
+  if (user) {
+    showApp();
+    loadItems();
+  }
+});
 
 function saveUser() {
-user = document.getElementById("userName").value;
-localStorage.setItem("user", user);
-showApp();
+  user = document.getElementById("userName").value;
+
+  if (!user) return;
+
+  localStorage.setItem("user", user);
+  showApp();
+  loadItems();
 }
 
 function showApp() {
-document.getElementById("userBox").classList.add("hidden");
-document.getElementById("main").classList.remove("hidden");
-document.getElementById("hello").innerText = "Olá " + user;
+  document.getElementById("userBox").classList.add("hidden");
+  document.getElementById("main").classList.remove("hidden");
+  document.getElementById("hello").innerText = "Olá " + user;
 }
 
 async function addItem() {
-const produto = document.getElementById("produto").value;
-const quantidade = document.getElementById("quantidade").value;
-const categoria = document.getElementById("categoria").value;
+  const produto = document.getElementById("produto").value;
+  const quantidade = document.getElementById("quantidade").value;
+  const categoria = document.getElementById("categoria").value;
 
-await fetch(API_URL, {
-method: "POST",
-body: JSON.stringify({
-action: "adicionar",
-produto,
-quantidade,
-categoria,
-utilizador: user
-})
-});
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "adicionar",
+      produto,
+      quantidade,
+      categoria,
+      utilizador: user
+    })
+  });
 
-loadItems();
+  loadItems();
 }
 
 async function loadItems() {
-const res = await fetch(API_URL + "?action=listar");
-const data = await res.json();
+  const res = await fetch(API_URL + "?action=listar");
+  const data = await res.json();
 
-const lista = document.getElementById("lista");
-lista.innerHTML = "";
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
 
-data.forEach(item => {
-const div = document.createElement("div");
-div.className = "item";
+  data.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "item";
 
-```
-div.innerHTML = `
-  <span>
-    ${item.produto} (${item.quantidade}) - ${item.utilizador}
-  </span>
-  <input type="checkbox" ${item.comprado ? "checked" : ""} 
-    onchange="toggle(${item.id}, this.checked)">
-`;
+    div.innerHTML = `
+      <span>${item.produto} (${item.quantidade}) - ${item.utilizador}</span>
+      <input type="checkbox" ${item.comprado ? "checked" : ""} 
+        onchange="toggle(${item.id}, this.checked)">
+    `;
 
-lista.appendChild(div);
-```
-
-});
+    lista.appendChild(div);
+  });
 }
 
 async function toggle(id, value) {
-await fetch(API_URL, {
-method: "POST",
-body: JSON.stringify({
-action: "atualizar",
-id,
-comprado: value
-})
-});
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "atualizar",
+      id,
+      comprado: value
+    })
+  });
 
-loadItems();
+  loadItems();
 }
 
 setInterval(loadItems, 5000);
