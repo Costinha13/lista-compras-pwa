@@ -151,13 +151,23 @@ window.addEventListener("load", () => {
 });
 
 function addRow() {
+
   const div = document.createElement("div");
   div.className = "row";
 
-  div.innerHTML = `
-    <input class="prod" placeholder="Produto">
-    <input class="qty" type="number" placeholder="Qt">
-  `;
+  const prod = document.createElement("input");
+  prod.className = "prod";
+  prod.placeholder = "Produto";
+  prod.autocomplete = "off";
+
+  const qty = document.createElement("input");
+  qty.className = "qty";
+  qty.type = "number";
+  qty.placeholder = "Qt";
+  qty.autocomplete = "off";
+
+  div.appendChild(prod);
+  div.appendChild(qty);
 
   document.getElementById("rows").appendChild(div);
 }
