@@ -166,10 +166,30 @@ function addRow() {
   qty.placeholder = "Qt";
   qty.autocomplete = "off";
 
+  // Verifica se é necessário criar nova linha
+  prod.addEventListener("input", checkLastRow);
+  qty.addEventListener("input", checkLastRow);
+
   div.appendChild(prod);
   div.appendChild(qty);
 
   document.getElementById("rows").appendChild(div);
+}
+
+function checkLastRow() {
+
+  const rows = document.querySelectorAll(".row");
+
+  if (rows.length === 0) return;
+
+  const lastRow = rows[rows.length - 1];
+
+  const prod = lastRow.querySelector(".prod").value.trim();
+  const qty = lastRow.querySelector(".qty").value.trim();
+
+  if (prod !== "" || qty !== "") {
+    addRow();
+  }
 }
 
 async function addAllItems() {
