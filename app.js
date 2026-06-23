@@ -81,7 +81,7 @@ function render() {
     const div = document.createElement("div");
     div.className = "item";
 
-    // swipe simples
+    // swipe delete
     let startX = 0;
 
     div.addEventListener("touchstart", e => {
@@ -95,18 +95,41 @@ function render() {
       }
     });
 
-    div.innerHTML = `
-      <div class="item-left">
-        <div class="item-title ${item.comprado ? 'done' : ''}">
-          ${item.produto} (${item.quantidade})
-        </div>
-        <div class="item-sub">${item.utilizador}</div>
-      </div>
+    // LEFT SIDE
+    const left = document.createElement("div");
+    left.className = "item-left";
 
-      <div class="delete">🗑</div>
-    `;
+    const title = document.createElement("div");
+    title.className = "item-title";
+    if (item.comprado) title.style.textDecoration = "line-through";
 
-    div.querySelector(".delete").onclick = () => deleteItem(item.id);
+    title.textContent = `${item.produto} (${item.quantidade})`;
+
+    const sub = document.createElement("div");
+    sub.className = "item-sub";
+    sub.textContent = item.utilizador;
+
+    left.appendChild(title);
+    left.appendChild(sub);
+
+    // CHECKBOX (ISTO É O QUE FALTAVA)
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = item.comprado;
+
+    checkbox.addEventListener("change", () => {
+      toggleItem(item.id, checkbox.checked);
+    });
+
+    // DELETE BUTTON
+    const del = document.createElement("div");
+    del.className = "delete";
+    del.textContent = "🗑";
+    del.onclick = () => deleteItem(item.id);
+
+    div.appendChild(left);
+    div.appendChild(checkbox);
+    div.appendChild(del);
 
     lista.appendChild(div);
   });
@@ -126,3 +149,16 @@ async function deleteItem(id) {
 
 // sync mais leve
 setInterval(loadItems, 8000);
+
+async function toggleItem(id, value) {
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "atualizar",
+      id: id,
+      comprado: value
+    })
+  });
+
+  loadItems();
+}
