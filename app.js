@@ -77,46 +77,40 @@ function render() {
       }
     });
 
-    // LEFT SIDE
-    const left = document.createElement("div");
-    left.className = "item-left";
+   const info = document.createElement("div");
+info.className = "item-info";
 
-    const title = document.createElement("div");
-    title.className = "item-title";
-    if (item.comprado) title.style.textDecoration = "line-through";
+const title = document.createElement("div");
+title.className = "item-title";
+title.textContent = `${item.produto} (${item.quantidade})`;
 
-    title.textContent = `${item.produto} (${item.quantidade})`;
+const sub = document.createElement("div");
+sub.className = "item-sub";
+sub.textContent = item.utilizador;
 
-    const sub = document.createElement("div");
-    sub.className = "item-sub";
-    sub.textContent = item.utilizador;
+info.appendChild(title);
+info.appendChild(sub);
 
-    left.appendChild(title);
-    left.appendChild(sub);
+const del = document.createElement("div");
+del.className = "delete";
+del.textContent = "🗑";
 
-    // CHECKBOX (ISTO É O QUE FALTAVA)
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = item.comprado;
+del.addEventListener("click", (e) => {
+  e.stopPropagation();
+  deleteItem(item.id);
+});
 
-    checkbox.addEventListener("change", () => {
-      toggleItem(item.id, checkbox.checked);
-    });
-
-    // DELETE BUTTON
-    const del = document.createElement("div");
-    del.className = "delete";
-    del.textContent = "🗑";
-    del.onclick = () => deleteItem(item.id);
-
-    div.appendChild(left);
-    div.appendChild(checkbox);
-    div.appendChild(del);
-
-    lista.appendChild(div);
-  });
+if (item.comprado) {
+  div.classList.add("comprado");
 }
 
+div.addEventListener("click", () => {
+  toggleItem(item.id, !item.comprado);
+});
+
+div.appendChild(info);
+div.appendChild(del);
+    
 async function deleteItem(id) {
   await fetch(API_URL, {
     method: "POST",
