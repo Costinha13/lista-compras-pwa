@@ -146,7 +146,6 @@ async function toggleItem(id, value) {
 }
 
 window.addEventListener("load", () => {
-  document.getElementById("addRowBtn").addEventListener("click", addRow);
   document.getElementById("addAllBtn").addEventListener("click", addAllItems);
 });
 
