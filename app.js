@@ -5,8 +5,8 @@ let items = [];
 let filter = "todos";
 
 window.addEventListener("load", () => {
+  addRow();
   document.getElementById("saveBtn").addEventListener("click", saveUser);
-  
   document.getElementById("f_all").onclick = () => setFilter("todos");
   document.getElementById("f_todo").onclick = () => setFilter("por");
   document.getElementById("f_done").onclick = () => setFilter("feitos");
