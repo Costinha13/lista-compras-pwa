@@ -110,6 +110,10 @@ div.addEventListener("click", () => {
 
 div.appendChild(info);
 div.appendChild(del);
+lista.appendChild(div);
+
+  }); // fecha o forEach
+} // fecha o render
     
 async function deleteItem(id) {
   await fetch(API_URL, {
