@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lista de Compras</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div class="app">
+    <h1>🛒 Lista de Compras</h1>
+
+    <div id="userBox">
+      <input id="userName" placeholder="O teu nome" />
+      <button onclick="saveUser()">Guardar</button>
+    </div>
+
+    <div id="main" class="hidden">
+
+      <p id="hello"></p>
+
+      <input id="produto" placeholder="Produto" />
+      <input id="quantidade" type="number" placeholder="Quantidade" />
+      <input id="categoria" placeholder="Categoria" />
+
+      <button onclick="addItem()">+ Adicionar</button>
+
+      <hr/>
+
+      <div id="lista"></div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

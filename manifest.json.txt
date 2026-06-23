@@ -1,0 +1,9 @@
+{
+"name": "Lista de Compras",
+"short_name": "Compras",
+"start_url": ".",
+"display": "standalone",
+"background_color": "#ffffff",
+"theme_color": "#2d89ef",
+"icons": []
+}
