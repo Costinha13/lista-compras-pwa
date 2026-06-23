@@ -6,8 +6,7 @@ let filter = "todos";
 
 window.addEventListener("load", () => {
   document.getElementById("saveBtn").addEventListener("click", saveUser);
-  document.getElementById("addBtn").addEventListener("click", addItem);
-
+  
   document.getElementById("f_all").onclick = () => setFilter("todos");
   document.getElementById("f_todo").onclick = () => setFilter("por");
   document.getElementById("f_done").onclick = () => setFilter("feitos");
@@ -38,24 +37,7 @@ function setFilter(f) {
   render();
 }
 
-async function addItem() {
-  const produto = document.getElementById("produto").value;
-  const quantidade = document.getElementById("quantidade").value;
-  const categoria = document.getElementById("categoria").value;
 
-  await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "adicionar",
-      produto,
-      quantidade,
-      categoria,
-      utilizador: user
-    })
-  });
-
-  loadItems();
-}
 
 async function loadItems() {
   const res = await fetch(API_URL + "?action=listar");
@@ -159,6 +141,55 @@ async function toggleItem(id, value) {
       comprado: value
     })
   });
+
+  loadItems();
+}
+
+window.addEventListener("load", () => {
+  document.getElementById("addRowBtn").addEventListener("click", addRow);
+  document.getElementById("addAllBtn").addEventListener("click", addAllItems);
+});
+
+function addRow() {
+  const div = document.createElement("div");
+  div.className = "row";
+
+  div.innerHTML = `
+    <input class="prod" placeholder="Produto">
+    <input class="qty" type="number" placeholder="Qt">
+  `;
+
+  document.getElementById("rows").appendChild(div);
+}
+
+async function addAllItems() {
+  const rows = document.querySelectorAll(".row");
+
+  for (const r of rows) {
+    const produto = r.querySelector(".prod").value;
+    const quantidade = r.querySelector(".qty").value;
+
+    if (!produto) continue;
+
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "adicionar",
+        produto,
+        quantidade: quantidade || 1,
+        categoria: "",
+        utilizador: user
+      })
+    });
+  }
+
+  // reset
+  document.getElementById("rows").innerHTML = `
+    <div class="row">
+      <input class="prod" placeholder="Produto">
+      <input class="qty" type="number" placeholder="Qt">
+    </div>
+  `;
 
   loadItems();
 }
