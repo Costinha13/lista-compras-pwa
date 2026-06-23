@@ -19,17 +19,21 @@
       <button id="saveBtn">Guardar</button>
     </div>
 
-    <div id="main" class="hidden">
+  <div id="formContainer">
 
-      <p id="hello"></p>
+  <div id="rows">
 
-      <input id="produto" placeholder="Produto" />
-      <input id="quantidade" type="number" placeholder="Quantidade" />
-      <input id="categoria" placeholder="Categoria" />
+    <div class="row">
+      <input class="prod" placeholder="Produto">
+      <input class="qty" type="number" placeholder="Qt">
+    </div>
 
-      <button id="addBtn">+ Adicionar</button>
+  </div>
 
-      <hr/>
+  <button id="addRowBtn">+ Adicionar linha</button>
+  <button id="addAllBtn">Adicionar à lista</button>
+
+</div>
 
       <!-- FILTROS (CORRIGIDO - dentro do body e dentro do main) -->
       <div class="filters">
