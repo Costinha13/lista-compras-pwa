@@ -1,8 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: #f6f7f9;
   margin: 0;
   color: #111;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .app {
@@ -34,11 +39,23 @@ button {
   width: 100%;
   padding: 12px;
   margin-top: 8px;
-  border: none;
+  border: 0;
   border-radius: 10px;
   background: #111;
   color: white;
   font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: opacity .12s ease, transform .08s ease;
+}
+
+button:active:not(:disabled) {
+  transform: scale(.985);
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: wait;
 }
 
 .filters {
@@ -61,34 +78,57 @@ button {
 
 .item {
   background: white;
-  padding: 14px;
-  border-radius: 12px;
-  margin-bottom: 8px;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  touch-action: pan-y;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color .12s ease, opacity .12s ease;
 }
 
-.item-left {
-  display: flex;
-  flex-direction: column;
+.item.comprado {
+  background: #007aff;
+  color: white;
+}
+
+.item.comprado .item-sub {
+  color: rgba(255, 255, 255, .8);
+}
+
+.item.pending,
+.item:active {
+  opacity: .72;
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .item-title {
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .item-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #777;
+  margin-top: 4px;
 }
 
-.delete {
-  font-size: 12px;
+button.delete {
+  width: auto;
+  flex: 0 0 auto;
+  padding: 6px 8px;
+  margin: 0 0 0 10px;
+  background: transparent;
   color: #ff3b30;
-  cursor: pointer;
+  font-size: 20px;
 }
 
 .hidden {
@@ -103,58 +143,32 @@ button {
 
 .row input {
   flex: 1;
+  min-width: 0;
   padding: 12px;
   border-radius: 10px;
   border: 1px solid #ddd;
   font-size: 16px;
 }
 
-#addRowBtn, #addAllBtn {
-  width: 100%;
+#addAllBtn {
   margin-top: 8px;
 }
-.item {
-  background: white;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.05);
 
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-
-  cursor: pointer;
-
-  transition: all .2s ease;
+.status {
+  min-height: 20px;
+  margin: 8px 2px;
+  font-size: 13px;
+  color: #666;
 }
 
-.item.comprado {
-  background: #007aff;
-  color: white;
+.status.error {
+  color: #c62828;
 }
 
-.item.comprado .item-sub {
-  color: rgba(255,255,255,.8);
+.status.success {
+  color: #16803c;
 }
 
-.item-info {
-  flex: 1;
-}
-
-.item-title {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.item-sub {
-  font-size: 14px;
-  color: #777;
-  margin-top: 4px;
-}
-
-.delete {
-  font-size: 22px;
-  margin-left: 10px;
-  cursor: pointer;
+.status.working {
+  color: #555;
 }
